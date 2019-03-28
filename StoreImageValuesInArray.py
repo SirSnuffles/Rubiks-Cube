@@ -5,7 +5,7 @@ import os
 
 
 class SaveToArray(object):
-	def __init__(self, directory = "G:/Programs/PersonalPrograms/PythonScripts/RCSolver"):
+	def __init__(self, directory = "D:/Programming/RCSolver/RCSolver"):
 		self.imagecount = 0
 		self.directory = directory
 		self.tempColour = ''
@@ -104,10 +104,10 @@ class SaveToArray(object):
 		return self.arrayOfValues
 
 
-# def main():
-# 	newObj = SaveToArray()
-# 	print(newObj.returnArray())
+def main():
+	newObj = SaveToArray()
+	print(newObj.returnArray())
 
 
-# if __name__ == '__main__':
-# 	main()
+if __name__ == '__main__':
+	main()

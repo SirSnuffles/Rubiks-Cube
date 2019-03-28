@@ -43,14 +43,15 @@ class Solve():
 					#match piece to center piece
 					Cube.Rotate()
 			elif CheckCorner(self.FindPositionPiece):
-
+				pass
 
 
 	def SolveInitSide(self):
 		pass
 
 	def SolveSecondLayer(self):
-		if self.OppositeInitSolvedSide
+		if self.OppositeInitSolvedSide:
+			pass
 
 	def SolveOpSideCross(self):
 		pass
@@ -61,8 +62,9 @@ class Solve():
 	def SortThirdLayerCorners(self):
 		pass
 
-class Algorithms():
+class Algorithms(object):
 	def __init__(self):
+		"""needs to hold order and multiple keys and values"""
 		self.FirstAlgorithm = {'R':'D', 'B':'L', 'R':'U', 'B':'R'}
 
 		self.SecondLayerAlgorithmLeft = {'T':'L', 'R':'U', 'T':'R', 'R':'D', 'T':'R', 'F':'L', 'T':'L', 'F':'R'}
@@ -78,7 +80,8 @@ class Algorithms():
 
 
 def main():
-	pass
+	applyalgorithm = Algorithms()
+	print(applyalgorithm.FirstAlgorithm)
 
 if __name__ == '__main__':
 	main()

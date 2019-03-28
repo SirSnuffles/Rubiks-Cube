@@ -1,0 +1,9 @@
+
+#directories
+CompilePyToExe
+
+#python files
+StlImages.py/
+
+#images
+*.jpg
