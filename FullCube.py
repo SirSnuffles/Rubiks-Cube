@@ -19,7 +19,7 @@ vertices = (
     (-1, -1,  1), 
     (-1,  1,  1)
 )
-#set a subes starting edges according to above vertices
+#set a cubes starting edges according to above vertices
 edges = (
     (0,1),
     (0,3),
@@ -45,13 +45,14 @@ surfaces = (
 )
 #set basic rgb colour scheme (r,g,b) // 1:255
 colors = (
-    (1, 0, 0), 
-    (0, 1, 0), 
-    (1, 0.5, 0), 
-    (0, 0, 1), 
-    (1, 1, 0),
-    (1, 1, 1)
+    (1, 0, 0),      #red
+    (0, 1, 0),      #green
+    (1, 0.5, 0),    #orange
+    (0, 0, 1),      #blue
+    (1, 1, 0),      #yellow
+    (1, 1, 1)       #white
 )
+
 
 class Cube():
     """creates a single cube which can be drawn and updated"""
@@ -91,10 +92,15 @@ class Cube():
 
         self.currentI[i], self.currentI[j] = -self.currentI[j] * dir, self.currentI[i] * dir
 
+    def boolOutsideColour(self):
+        """returns bool 'True' if coloured surface is on the outside of the cube"""
+        # if colors
+        pass
+
     def draw(self, col, surf, vert, animate, angle, axis, slice, dir):
         """draw cube with OpenGL Legacy matrix"""
 
-        pos = [(p - (self.N % 1) / 2) * 2.1 * self.scale for p in self.currentI]
+        pos = [(position - (self.N % 1) / 2) * 2.1 * self.scale for position in self.currentI]
         rotMat = [*self.rot[0], 0, *self.rot[1], 0, *self.rot[2], 0, *pos, 1]
 
         glPushMatrix()
@@ -200,7 +206,7 @@ class EntireCube(MotorControl):
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-            
+            #
             if animate:
                 if animateAng >= 90:
                     for cube in self.cubes:
@@ -217,10 +223,13 @@ class EntireCube(MotorControl):
             pygame.time.wait(10)
 
 def main():
-
     pygame.init()
+    #display size
     display = (800,600)
-    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    #create screen
+    screen = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    #colour background to white
+    glClearColor(1.0, 1.0, 1.0, 1.0)
     glEnable(GL_DEPTH_TEST) 
 
     glMatrixMode(GL_PROJECTION)
