@@ -10,7 +10,7 @@ bot_owner = "TwitchBot"
 nick = "sirsnufflez"
 channel = "#sirsnufflez"
 server = "irc.chat.twitch.tv"
-password = "" 
+password = "oauth:lnwctc3sc598urancvhbxaef8m0k3q" 
 PORT = 6667
 
 irc = socket.socket()

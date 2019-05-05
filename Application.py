@@ -1,4 +1,3 @@
-
 #local
 
 import StoreImageValuesInArray
@@ -12,59 +11,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-
-# arrayOfValues = [['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None'],        #1-9 w
-#                 ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None'],         #10-18 o
-#                 ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None'],         #19-27 y
-#                 ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None'],         #28-36 r
-#                 ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None'],         #37-45 b
-#                 ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']]         #46-54 g
-
-
 class cliCube():
-    vertices = (
-    (1, -1, -1),
-    (1, 1, -1),
-    (-1, 1, -1),
-    (-1, -1, -1),
-    (1, -1, 1),
-    (1, 1, 1),
-    (-1, -1, 1),
-    (-1, 1, 1)
-    )
-
-    edges = (
-    (0,1),
-    (0,3),
-    (0,4),
-    (2,1),
-    (2,3),
-    (2,7),
-    (6,3),
-    (6,4),
-    (6,7),
-    (5,1),
-    (5,4),
-    (5,7)
-    )
-
-    surfaces = (
-    (0,1,2,3),
-    (3,2,7,6),
-    (6,7,5,4),
-    (4,5,1,0),
-    (1,5,7,2),
-    (4,0,3,6)
-    )
-
-    colors = (
-    (1,0,0), #Red
-    (0,1,0), #Green
-    (1,0.5,0), #Orange
-    (1,1,0), #Yellow
-    (1,1,1), #White
-    (0,0,1), #Blue
-    )
 
     def __init__(self, arrayOfValues):
         self.arrayOfValues = arrayOfValues
@@ -311,5 +258,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # pygame.quit()
-    # quit()

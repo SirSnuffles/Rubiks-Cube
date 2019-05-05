@@ -1,3 +1,5 @@
+# import RPi.GPIO as GPIO
+
 import time
 
 #TODO
@@ -17,13 +19,13 @@ class MotorControl(object):
 		########################  Front       bottom         Right         Back          Top           Left
 		# self.ControlPins = [5,6,13,19]
 		self.seq = [ [1,0,0,0],
-					[1,1,0,0],
-					[0,1,0,0],
-					[0,1,1,0],
-					[0,0,1,0],
-					[0,0,1,1],
-					[0,0,0,1],
-					[1,0,0,1]
+				[1,1,0,0],
+				[0,1,0,0],
+				[0,1,1,0],
+				[0,0,1,0],
+				[0,0,1,1],
+				[0,0,0,1],
+				[1,0,0,1]
 		]
 		self.SetupGPIOPins()
 

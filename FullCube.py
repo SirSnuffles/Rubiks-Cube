@@ -1,14 +1,15 @@
 import pygame
 import random
 from pygame.locals import *
+import time
 
 from PiBasicRotation import MotorControl
+from Solve import Stack
+from Solve import Solve
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-
-#set a cubes starting vertices
 vertices = (
     ( 1, -1, -1),
     ( 1,  1, -1),
@@ -19,7 +20,6 @@ vertices = (
     (-1, -1,  1), 
     (-1,  1,  1)
 )
-#set a cubes starting edges according to above vertices
 edges = (
     (0,1),
     (0,3),
@@ -34,7 +34,6 @@ edges = (
     (5,4),
     (5,7)
 )
-#set a cubes starting surfaces according to above edges
 surfaces = (
     (0, 1, 2, 3),
     (3, 2, 7, 6),
@@ -43,28 +42,17 @@ surfaces = (
     (1, 5, 7, 2), 
     (4, 0, 3, 6)
 )
-#set basic rgb colour scheme (r,g,b) // 1:255
 colors = (
-    (1, 0, 0),      #red
-    (0, 1, 0),      #green
-    (1, 0.5, 0),    #orange
-    (0, 0, 1),      #blue
-    (1, 1, 0),      #yellow
-    (1, 1, 1)       #white
+    (1, 0, 0), 
+    (0, 1, 0), 
+    (1, 0.5, 0), 
+    (0, 0, 1), 
+    (1, 1, 0),
+    (1, 1, 1)
 )
 
-
 class Cube():
-    """creates a single cube which can be drawn and updated"""
     def __init__(self, id, N, scale):
-        """
-        id =        id of cube to perform operations on;
-        i =         (ix, iy, iz) :: (iz, iy, N-1-ix) inverting indices when rotated;
-        N =         Number of pieces per edge (3^3 = 27 number of cubes in total);
-        scale =     size;
-        init =      Where each cube is initially located;
-        currentI =  Where each cube is currently located; 
-        rot =       rotation matrix; 3 x size 3 arrays containing vertex positions"""
         self.i = -1
         self.N = N
         self.scale = scale
@@ -73,34 +61,22 @@ class Cube():
         self.rot = [[1 if i == j else 0 for i in range(3)] for j in range(3)]
 
     def isAffected(self, axis, slice, dir):
-        """returns bool to determine if cube is part of a slice to be rotated"""
         return self.currentI[axis] == slice - (self.N // 2)
 
     def update(self, axis, slice, dir):
-        """rotates a single cube based on the following attributes;
-        axis = int, 0,1,2 indexed to corresponding orientation;
-        slice = int, 0,1,2 indexed to corresponding slice;
-        dir = int, -1,1 indexed to backward and forward respectively;
-        """
+
         if not self.isAffected(axis, slice, dir):
-            #if cube not affected return"""
             return
-        #cube rotation
+
         i, j = (axis + 1) % 3, (axis + 2) % 3
         for k in range(3):
             self.rot[k][i], self.rot[k][j] = -self.rot[k][j] * dir, self.rot[k][i] * dir
 
         self.currentI[i], self.currentI[j] = -self.currentI[j] * dir, self.currentI[i] * dir
 
-    def boolOutsideColour(self):
-        """returns bool 'True' if coloured surface is on the outside of the cube"""
-        # if colors
-        pass
-
     def draw(self, col, surf, vert, animate, angle, axis, slice, dir):
-        """draw cube with OpenGL Legacy matrix"""
 
-        pos = [(position - (self.N % 1) / 2) * 2.1 * self.scale for position in self.currentI]
+        pos = [(p - (self.N % 1) / 2) * 2.1 * self.scale for p in self.currentI]
         rotMat = [*self.rot[0], 0, *self.rot[1], 0, *self.rot[2], 0, *pos, 1]
 
         glPushMatrix()
@@ -119,94 +95,80 @@ class Cube():
 
         glPopMatrix()
 
-class EntireCube(MotorControl):
-    """grouping of all cubes;
-        MotorControl will only work if run on 
-        raspberry pi or disabling GPIO imports"""
+class EntireCube(MotorControl, Stack):
     def __init__(self, N, scale):
-        """MotorControl is inherited by EntireCube
-        N = Size of cube
-        cr = Cube size
-        cubes = list of cubes(coords, N, scale)
-        """
         MotorControl.__init__(self)
+        Stack.__init__(self)
         self.N = N
         cr = range(self.N)
         self.cubes = [Cube((x, y, z), self.N, scale) for x in cr for y in cr for z in cr]
 
+
     def mainloop(self):
-        """map keypresses to sliced groups of rotated cubes"""
         rotateUpKey, rotateDownKey, rotateLeftKey, rotateRightKey = False, False, False, False
         rotationalSensitivity = 2
         rotateWholeCube = 5
 
-        #Keypresses K_DIR: ()
-        rotCubeMap  = { 
-                    K_UP: (-1, 0),
-                    K_DOWN: (1, 0),
-                    K_LEFT: (0, -1),
-                    K_RIGHT: (0, 1)
-        }
-        #Keypresses K_alphanumeric: (x,y,z) "action" passes back into cube for each cube in the slice
-        #mid is not needed as can't map to motor input
+        rotCubeMap  = { K_UP: (-1, 0), K_DOWN: (1, 0), K_LEFT: (0, -1), K_RIGHT: (0, 1)}
         rotSliceMap = {
-                    K_1: (0, 0, 1),
-                    # K_2: (0, 1, 1), #mid slice
-                    K_3: (0, 2, 1), 
-                    K_4: (1, 0, 1), 
-                    # K_5: (1, 1, 1), #mid slice
-                    K_6: (1, 2, 1), 
-                    K_7: (2, 0, 1), 
-                    # K_8: (2, 1, 1), #mid slice
-                    K_9: (2, 2, 1),
-                    K_q: (0, 0, -1), 
-                    # K_w: (0, 1, -1),#mid slice
-                    K_e: (0, 2, -1), 
-                    K_r: (1, 0, -1), 
-                    # K_t: (1, 1, -1),#mid slice
-                    K_y: (1, 2, -1), 
-                    K_u: (2, 0, -1), 
-                    # K_i: (2, 1, -1),#mid slice
-                    K_o: (2, 2, -1),
+            "LCW": (0, 0, 1),
+            # K_2: (0, 1, 1),
+            "RCCW": (0, 2, 1), 
+            "BCW": (1, 0, 1), 
+            # K_5: (1, 1, 1),
+            "TCCW": (1, 2, 1), 
+            "BaCW": (2, 0, 1), 
+            # K_8: (2, 1, 1), 
+            "FCCW": (2, 2, 1),
+            "LCCW": (0, 0, -1), 
+            # K_w: (0, 1, -1), 
+            "RCW": (0, 2, -1), 
+            "BCCW": (1, 0, -1), 
+            # K_t: (1, 1, -1),
+            "TCW": (1, 2, -1), 
+            "BaCCW": (2, 0, -1), 
+            # K_i: (2, 1, -1), 
+            "FCW": (2, 2, -1),
         }  
 
         angX, angY, rotCube = 0, 0, (0, 0)
         animate, animateAng, animateSpeed = False, 0, 5
         action = (0, 0, 0)
         while True:
+
             for event in pygame.event.get():
-                #quit on exit gui
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
-                if event.type == KEYDOWN:
-                    if event.key in rotCubeMap:
-                        #set rotCube to value of keypress dict
-                        rotCube = rotCubeMap[event.key]
-                    if not animate and event.key in rotSliceMap:
-                        #motor control input
-                        MotorControl.OrganiseMotorInput(self, str(pygame.key.name(event.key)))
-                        #begin animation, set action to value of keypress dict
-                        animate, action = True, rotSliceMap[event.key]
-                if event.type == KEYUP:
-                    #reset on release
-                    if event.key in rotCubeMap:
+                # if event.type == KEYDOWN:
+                if not self.isEmpty():
+                    if self.peek() in rotCubeMap:
+                        rotCube = rotCubeMap[self.peek()]
+                    #     print(self.getMove())
+                    if not animate and self.peek() in rotSliceMap:
+                        # print(str(pygame.key.name(event.key)))
+                            # MotorControl.OrganiseMotorInput(self, str(pygame.key.name(event.key)))
+                        animate, action = True, rotSliceMap[self.pop()]
+                    # if event.type == KEYUP:
+                    if self.peek() in rotCubeMap:
+                        self.pop()
                         rotCube = (0, 0)
+                    # self.pop()
+                else:
+                    self.push("None")
+                    time.sleep(1)
 
             angX += rotateWholeCube * rotCube[0]
             angY += rotateWholeCube * rotCube[1]
 
             glMatrixMode(GL_MODELVIEW)
             glLoadIdentity()
-            #move cube back from "camera" to see
             glTranslatef(0, 0, -40)
-            #rotation using opengl
             glRotatef(angY, 0, 1, 0)
             glRotatef(angX, 1, 0, 0)
 
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-            #
             if animate:
                 if animateAng >= 90:
                     for cube in self.cubes:
@@ -220,16 +182,13 @@ class EntireCube(MotorControl):
                 animateAng += animateSpeed
 
             pygame.display.flip()
-            pygame.time.wait(10)
+            pygame.time.wait(10)  
 
 def main():
+
     pygame.init()
-    #display size
     display = (800,600)
-    #create screen
-    screen = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
-    #colour background to white
-    glClearColor(1.0, 1.0, 1.0, 1.0)
+    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
     glEnable(GL_DEPTH_TEST) 
 
     glMatrixMode(GL_PROJECTION)
