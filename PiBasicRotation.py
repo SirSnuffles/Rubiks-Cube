@@ -33,7 +33,7 @@ class MotorControl(object):
 		pass
 
 	def SetupGPIOPins(self):
-		print('setup')
+		print('setup GPIO Pins')
 		# for motor in self.MotorControlPins:
 		# 	for pin in motor:
 		# 		GPIO.setup(pin, GPIO.OUT)
