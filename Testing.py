@@ -1,73 +1,85 @@
-class WhiteCrossSolver():
-    '''
-    This class solves the white cross on the down face
-    '''
-    STEPS = {
-        'U': {
-            'R': [],
-            'L': [],
-            'F': [],
-            'B': [],
-        },
-        'D': {
-            'R': ['R2'],
-            'L': ['L2'],
-            'F': ['F2'],
-            'B': ['B2']
-        },
-        'F': {
-            'U': ["F", "R", "U'", "R'", "F'"],
-            'D': ["F'", "R", "U'", "R'"],
-            'R': ["R", "U", "R'"],
-            'L': ["L'", "U'", "L"],
-        },
-        'B': {
-            'U': ["B", "L", "U'", "L'", "B'"],
-            'D': ["B", "R'", "U", "R"],
-            'R': ["R'", "U", "R"],
-            'L': ["L", "U'", "L'"],
-        },
-        'L': {
-            'U': ["L", "F", "U'", "F'", "L'"],
-            'D': ["L'", "F", "U'", "F'"],
-            'F': ["F", "U'", "F'"],
-            'B': ["B'", "U", "B"],
-        },
-        'R': {
-            'U': ["R'", "F'", "U", "F", "R"],
-            'D': ["R", "F'", "U", "F"],
-            'F': ["F'", "U", "F"],
-            'B': ["B", "U'", "B'"],
-        }
-    }
-    @staticmethod
-    def first_step(white_facing, color_facing):
-        return WhiteCrossSolver.STEPS[white_facing.upper()][color_facing.upper()]
+					elif whiteEdge[0] == 1:
+						#On the front side
+						if self.cli.arrayOfValues[0][7] == "white":
+							self.cli.rotateLayer("TCW")
+							self.items.insert(0, "TCW")
+							curWhitePositions = self.findWhiteEdges()
+						if whiteEdge[1] == 1:
+							"""https://ruwix.com/the-rubiks-cube/how-to-solve-the-rubiks-cube-beginners-method/step-1-first-layer-edges/							
+							"FCW"
+							"TCCW"
+							"RCW"
+							"TCW"	"""
+							self.cli.rotateLayer("FCW")
+							self.items.insert(0, "FCW")
 
+							self.cli.rotateLayer("TCCW")
+							self.items.insert(0, "TCCW")
 
-    def solution(self):
-        solution = []
-        for color in 'RGOB':
-            cubie_position = self.cube.search_by_colors('W', color)
+							self.cli.rotateLayer("RCW")
+							self.items.insert(0, "RCW")
 
-            orig_cubie = self.cube.cubies[cubie_position]
-            white_facing = orig_cubie.color_facing('W')
-            color_facing = orig_cubie.color_facing(color)
-            step_solution = WhiteCrossSolver.first_step(white_facing, color_facing)
-            # First goal is to put white sticker on top face
+							self.cli.rotateLayer("TCW")
+							self.items.insert(0, "TCW")
+							curWhitePositions = self.findWhiteEdges()
+							#happy
 
-            for m in step_solution:
-                self.cube.move(Move(m))
-            solution.extend(step_solution)
+						elif whiteEdge[1] == 3:
+							"""L B R' F2'"""
+							self.cli.rotateLayer("LCW")
+							self.items.insert(0, "LCW")
 
-            # Second goal is to place the cubie on the top over its place
-            while self.cube.cubies['FU'].facings['U'] != 'W' or self.cube.cubies['FU'].facings['F'] != color:
-                solution.append('U')
-                self.cube.move(Move('U'))
-            # Third goal will be a F2 movement
-            solution.append("F2")
-            self.cube.move(Move("F2"))
-            solution.append('Y')
-            self.cube.move(Move("Y"))
+							self.cli.rotateLayer("BCW")
+							self.items.insert(0, "BCW")
 
-        return solution
+							self.cli.rotateLayer("LCCW")
+							self.items.insert(0, "LCCW")
+
+							self.cli.rotateLayer("FCW")
+							self.items.insert(0, "FCW")
+
+							self.cli.rotateLayer("FCW")
+							self.items.insert(0, "FCW")
+							curWhitePositions = self.findWhiteEdges()
+							#happy
+
+						elif whiteEdge[1] == 5:
+							#R' D' R F2
+
+							self.cli.rotateLayer("RCCW")
+							self.items.insert(0, "RCCW")
+
+							self.cli.rotateLayer("BCCW")
+							self.items.insert(0, "BCCW")
+
+							self.cli.rotateLayer("RCW")
+							self.items.insert(0, "RCW")
+
+							self.cli.rotateLayer("FCW")
+							self.items.insert(0, "FCW")	
+
+							self.cli.rotateLayer("FCW")
+							self.items.insert(0, "FCW")	
+							curWhitePositions = self.findWhiteEdges()
+							#happy
+
+						elif whiteEdge[1] == 7:
+							"""F' R' D' R F2"""
+							self.cli.rotateLayer("FCCW")
+							self.items.insert(0, "FCCW")
+
+							self.cli.rotateLayer("RCCW")
+							self.items.insert(0, "RCCW")
+
+							self.cli.rotateLayer("BCCW")
+							self.items.insert(0, "BCCW")
+
+							self.cli.rotateLayer("RCW")
+							self.items.insert(0, "RCW")
+
+							self.cli.rotateLayer("FCW")
+							self.items.insert(0, "FCW")
+
+							self.cli.rotateLayer("FCW")
+							self.items.insert(0, "FCW")
+							curWhitePositions = self.findWhiteEdges()

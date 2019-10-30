@@ -194,15 +194,17 @@ class EntireCube(MotorControl, Stack):
 					quit()
 
 				if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+					"""if left mouse button is pushed, add solve moves to queue"""
 					self.Solve()
-					# self.updateBoard(self.cli.arrayOfValues)
 
 				if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+					"""if right mouse button is pushed, add 10 scramble moves to queue"""
 					for i in range(10):
 						self.Scramble()
-					print(self.cli.arrayOfValues)
+					# print(self.cli.arrayOfValues)
 
 				if event.type == KEYDOWN:
+					"""if a manual control move is init, perform move"""
 					if event.key in rotCubeMap:
 						rotCube = rotCubeMap[event.key]
 
