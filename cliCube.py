@@ -1,13 +1,8 @@
-#local
-
-import StoreImageValuesInArray
-
-#libs
-
-
 class cliCube():
+	"""Creates a cli representation of a rubik's cube"""
 
 	def __init__(self):
+		"""initiate a 6x9 array of values"""
 		self.arrayOfValues = [
 		9*['yellow'],
 		9*['orange'],
@@ -21,20 +16,27 @@ class cliCube():
 		"""prints a formatted perspective of arrayOfValues for clarity"""
 		#bworgy
 		#                       '#' '#' '#'
-		#                       '#' 'y' '#'1
+		#                       '#' 'y' '#'1 Top
 		#                       '#' '#' '#'
 
 		#   '#' '#' '#'         '#' '#' '#'         '#' '#' '#'
-		#   '#' 'g' '#'3        '#' 'o' '#'2        '#' 'b' '#'4
+		#   '#' 'g' '#'3 Left   '#' 'o' '#'2Front   '#' 'b' '#'4 Right
 		#   '#' '#' '#'         '#' '#' '#'         '#' '#' '#'
 
 		#                       '#' '#' '#'
-		#                       '#' 'w' '#'5
+		#                       '#' 'w' '#'5 Bottom
 		#                       '#' '#' '#'
 
 		#                       '#' '#' '#'
-		#                       '#' 'r' '#'6
+		#                       '#' 'r' '#'6 Back
 		#                       '#' '#' '#'
+		#Top = T
+		#Left = L
+		#Right = R
+		#Front = F
+		#Bottom = B
+		#Back = Ba
+
 		print("{:>37}{:>10}{:>10}".format(*self.arrayOfValues[0][:3]))
 		print("{:>37}{:>10}{:>10}".format(*self.arrayOfValues[0][3:10]))
 		print("{:>37}{:>10}{:>10}".format(*self.arrayOfValues[0][6:9]))
@@ -59,16 +61,8 @@ class cliCube():
 		print(self.surfaces)
 		print(self.colors)
 
-	# def ImageProcessedArray(self):
-		"""get array from StoreImageValuesInArray and return"""
-		# newArray = StoreImageValuesInArray.SaveToArray()
-		# arrayOfValues = newArray.returnArray()
-		"""for testing purposes"""
-		# arrayOfValues = [['silver', 'maroon', 'teal', 'orange', 'teal', 'white', 'teal', 'yellow', 'yellow'], ['silver', 'red', 'teal', 'white', 'teal', 'yellow', 'teal', 'orange', 'yellow'], ['silver', 'teal', 'teal', 'teal', 'orange', 'yellow', 'teal', 'teal', 'yellow'], ['maroon', 'orange', 'orange', 'teal', 'red', 'teal', 'orange', 'teal', 'red'], ['orange', 'maroon', 'red', 'white', 'white', 'teal', 'yellow', 'red', 'teal'], ['teal', 'orange', 'white', 'teal', 'yellow', 'white', 'maroon', 'orange', 'orange']]
-		# return arrayOfValues
-
 	def rotateTop(self, face, dir):
-		#Error!
+		"""rotate the top layer"""
 		index = 0
 		if dir == 'CW':
 
@@ -104,7 +98,7 @@ class cliCube():
 			self.arrayOfValues[index][6], self.arrayOfValues[index][7], self.arrayOfValues[index][8]
 
 	def rotateFront(self, face, dir):
-		#Tested 100%
+		"""rotate the front layer"""
 		index = 1
 		if dir == 'CW':
 			self.arrayOfValues[3][0], self.arrayOfValues[3][3], self.arrayOfValues[3][6], \
@@ -139,7 +133,7 @@ class cliCube():
 			self.arrayOfValues[index][6], self.arrayOfValues[index][7], self.arrayOfValues[index][8] 
 			
 	def rotateLeft(self, face, dir):
-		#Tested
+		"""rotate the left layer"""
 		index = 2
 		if dir == 'CW':
 			self.arrayOfValues[1][0], self.arrayOfValues[1][3], self.arrayOfValues[1][6], \
@@ -174,7 +168,7 @@ class cliCube():
 			self.arrayOfValues[index][6], self.arrayOfValues[index][7], self.arrayOfValues[index][8]
 			
 	def rotateRight(self, face, dir):
-		#Tested
+		"""rotate the right layer"""
 		index = 3
 		if dir == 'CW':
 			self.arrayOfValues[5][2], self.arrayOfValues[5][5], self.arrayOfValues[5][8], \
@@ -209,11 +203,9 @@ class cliCube():
 			self.arrayOfValues[index][6], self.arrayOfValues[index][7], self.arrayOfValues[index][8]
 
 	def rotateBottom(self, face, dir):
-		#Tested
+		"""rotate the bottom layer"""
 		index = 4
-		# pass
 		if dir == 'CCW':
-
 			self.arrayOfValues[1][6], self.arrayOfValues[1][7], self.arrayOfValues[1][8], \
 			self.arrayOfValues[3][6], self.arrayOfValues[3][7], self.arrayOfValues[3][8], \
 			self.arrayOfValues[5][2], self.arrayOfValues[5][1], self.arrayOfValues[5][0], \
@@ -231,7 +223,6 @@ class cliCube():
 
 
 		elif dir == 'CW':
-
 			self.arrayOfValues[3][6], self.arrayOfValues[3][7], self.arrayOfValues[3][8], \
 			self.arrayOfValues[5][2], self.arrayOfValues[5][1], self.arrayOfValues[5][0], \
 			self.arrayOfValues[2][6], self.arrayOfValues[2][7], self.arrayOfValues[2][8], \
@@ -248,6 +239,7 @@ class cliCube():
 			self.arrayOfValues[index][8], self.arrayOfValues[index][5], self.arrayOfValues[index][2]
 
 	def rotateBack(self, face, dir):
+		"""rotate the back layer"""
 		index = 5
 		if dir == 'CW':
 			self.arrayOfValues[2][6], self.arrayOfValues[2][3], self.arrayOfValues[2][0], \
@@ -264,9 +256,6 @@ class cliCube():
 			self.arrayOfValues[index][0], self.arrayOfValues[index][1], self.arrayOfValues[index][2], \
 			self.arrayOfValues[index][3], self.arrayOfValues[index][4], self.arrayOfValues[index][5], \
 			self.arrayOfValues[index][6], self.arrayOfValues[index][7], self.arrayOfValues[index][8]
-
-
-
 
 		elif dir == 'CCW':
 			self.arrayOfValues[0][0], self.arrayOfValues[0][1], self.arrayOfValues[0][2], \
@@ -285,33 +274,26 @@ class cliCube():
 			self.arrayOfValues[index][6], self.arrayOfValues[index][7], self.arrayOfValues[index][8]
 		
 	def rotateLayer(self, move):
-		# updatedArray = arrayOfValues
+		"""rotate the any layer based on format of move"""
 		if move[0:2] == "Ba":
 			face = "Ba"
 			direction = move[2:]
-			
 		else:
 			face = move[0]
 			direction = move[1:]
-
+			
 		if face == 'T': #Top
 			self.rotateTop(face, direction)
-			
 		elif face == 'F': #Front
 			self.rotateFront(face, direction)
-			# index = 1
 		elif face == 'L': #Left
 			self.rotateLeft(face, direction)
-			# index = 2
 		elif face == 'R': #Right
 			self.rotateRight(face, direction)
-			# index = 3
 		elif face == 'B': #Bottom
 			self.rotateBottom(face, direction)
-			# index = 4
 		elif face == 'Ba': #Back
 			self.rotateBack(face, direction)
-			# index = 5
 		else:
 			print('ERROR! Unknown face name: input = "T", "F", "B", "Ba", "L", "R"')
 			return

@@ -2,8 +2,6 @@ import cliCube
 import random
 import time
 
-# arrayOfValues = [['blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue', 'blue'], ['white', 'white', 'white', 'white', 'white', 'white', 'white', 'white', 'white'], ['orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange', 'orange'], ['red', 'red', 'red', 'red', 'red', 'red', 'red', 'red', 'red'], ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green'], ['yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow', 'yellow']]
-
 class Algorithms():
 	def __init__(self, board):
 		self.moveCount = 0
@@ -52,15 +50,11 @@ class Algorithms():
 				moveToAppend += "CW"
 			elif CW_CCW == 1:
 				moveToAppend += "CCW"
-			# print(moveToAppend)
 			self.items.insert(0, moveToAppend)
 			self.cli.rotateLayer(moveToAppend)
-			# return moveToAppend
 
 	def Solve(self):
 		self.solving = True
-		# self.updateBoard(board)
-		# self.cli = cli
 		print("Solving")
 		self.solveWhiteCross()
 
@@ -70,7 +64,6 @@ class Algorithms():
 
 	def rotateCliGui(self, move):
 		self.items.insert(0,move)
-		# self.cli.rotateLayer(move)
 
 	def moveToYellowFace(self, curWhitePositions, solvedWhitePositions, solvedColouredPositions):
 		totalMoves = 0
@@ -496,47 +489,112 @@ class Algorithms():
 
 
 	def findWhiteEdges(self):
-		# print(self.board)
 		curWhitePositions = []
 		for indSide, side in enumerate(self.board):
 			for edge in range(1, len(side), 2):
 				if side[edge] == "white":
-					# print(side[edge])
 					curWhitePositions.append((indSide, edge),)
 		return curWhitePositions
 
 	def solveWhiteSide(self):
 		curWhitePositions = self.findWhiteCorners()
+		print(curWhitePositions)
+
 		solvedWhitePositions = [(4, 0), (4, 2), (4, 4), (4, 6), (4, 8)] #(4,4) not nessessary
 		solvedGreenPositions = [(2, 0), (2, 2)]
 		solvedRedPositions = [(5, 0), (5, 2)]
 		solvedBluePositions = [(3, 0), (3, 2)]
 		solvedOrangePositions = [(1, 0), (1, 2)]
 
-		while not all(self.board[v[0]][v[1]] == "white" for v in solvedWhitePositions) or \
-		not all(self.board[u[0]][u[1]] == self.board[u[0]][4] for u in solvedGreenPositions) or \
-		not all(self.board[u[0]][u[1]] == self.board[u[0]][4] for u in solvedRedPositions) or \
-		not all(self.board[u[0]][u[1]] == self.board[u[0]][4] for u in solvedBluePositions) or \
-		not all(self.board[u[0]][u[1]] == self.board[u[0]][4] for u in solvedOrangePositions):
-			print("Solving White Corners Now...")
-			break
+		#for testing purposes
+		count = 0
+		while not all(x==self.cli.arrayOfValues[4][0] for x in self.cli.arrayOfValues[4]) and count < 25:
+			count += 1
+			for whiteCorner in curWhitePositions:
+
+				if whiteCorner[0] == 4 and whiteCorner[1] == 0 or whiteCorner[0] == 1 and whiteCorner[1] == 6 or whiteCorner[0] == 2 and whiteCorner[1] == 9:
+					"""if whitesquare in the green orange white corner"""
+					if self.cli.arrayOfValues[0][6] == "white" or self.cli.arrayOfValues[2][2] == "white" or self.cli.arrayOfValues[1][0] == "white":
+						self.cli.rotateLayer("TCW")
+						self.items.insert(0, "TCW")
+						curWhitePositions = self.findWhiteCorners()
+					self.cli.rotateLayer("FCCW")
+					self.items.insert(0, "FCCW")
+					self.cli.rotateLayer("BCCW")
+					self.items.insert(0, "BCCW")
+					self.cli.rotateLayer("FCW")
+					self.items.insert(0, "FCW")
+					self.cli.rotateLayer("BCW")
+					self.items.insert(0, "BCW")
+					curWhitePositions = self.findWhiteCorners()
+
+				if whiteCorner[0] == 4 and whiteCorner[1] == 2 or whiteCorner[0] == 1 and whiteCorner[1] == 8 or whiteCorner[0] == 3 and whiteCorner[1] == 7:
+					if self.cli.arrayOfValues[0][6] == "white" or self.cli.arrayOfValues[2][2] == "white" or self.cli.arrayOfValues[1][0] == "white":
+						self.cli.rotateLayer("TCW")
+						self.items.insert(0, "TCW")
+						curWhitePositions = self.findWhiteCorners()
+					self.cli.rotateLayer("RCCW")
+					self.items.insert(0, "RCCW")
+					self.cli.rotateLayer("BCCW")
+					self.items.insert(0, "BCCW")
+					self.cli.rotateLayer("RCW")
+					self.items.insert(0, "RCW")
+					self.cli.rotateLayer("BCW")
+					self.items.insert(0, "BCW")
+					curWhitePositions = self.findWhiteCorners()
+
+				if whiteCorner[0] == 4 and whiteCorner[1] == 8 or whiteCorner[0] == 3 and whiteCorner[1] == 8 or whiteCorner[0] == 5 and whiteCorner[1] == 2:
+					if self.cli.arrayOfValues[0][8] == "white" or self.cli.arrayOfValues[1][2] == "white" or self.cli.arrayOfValues[3][0] == "white":
+						self.cli.rotateLayer("TCW")
+						self.items.insert(0, "TCW")
+						curWhitePositions = self.findWhiteCorners()
+					self.cli.rotateLayer("BaCCW")
+					self.items.insert(0, "BaCCW")
+					self.cli.rotateLayer("BCCW")
+					self.items.insert(0, "BCCW")
+					self.cli.rotateLayer("BaCW")
+					self.items.insert(0, "BaCW")
+					self.cli.rotateLayer("BCW")
+					self.items.insert(0, "BCW")
+					curWhitePositions = self.findWhiteCorners()
+					corner = (1, 1, 1)
+				
+				if whiteCorner[0] == 4 and whiteCorner[1] == 6 or whiteCorner[0] == 2 and whiteCorner[1] == 6 or whiteCorner[0] == 5 and whiteCorner[1] == 0:	
+					if self.cli.arrayOfValues[0][8] == "white" or self.cli.arrayOfValues[1][2] == "white" or self.cli.arrayOfValues[3][0] == "white":
+						self.cli.rotateLayer("TCW")
+						self.items.insert(0, "TCW")
+						curWhitePositions = self.findWhiteCorners()
+					self.cli.rotateLayer("LCCW")
+					self.items.insert(0, "LCCW")
+					self.cli.rotateLayer("BCCW")
+					self.items.insert(0, "BCCW")
+					self.cli.rotateLayer("LCW")
+					self.items.insert(0, "LCW")
+					self.cli.rotateLayer("BCW")
+					self.items.insert(0, "BCW")
+					curWhitePositions = self.findWhiteCorners()
+					corner = (0, 0, 1)
+
 		print("Solved White Side!")
+
 	def findWhiteCorners(self):
 		curWhitePositions = []
 		for indSide, side in enumerate(self.board):
 			for corner in range(0, len(side), 2):
 				if side[corner] == "white":
-					curWhitePositions.append(((indSide, corner),))
+					curWhitePositions.append((indSide, corner),)
 		return curWhitePositions
 
 	def solveSecondLayer(self):
 		pass
 
-	# def updateBoard(self, board):
-	# 	print("called updateBoard from Solve")
-	# 	self.board = board
+	# def makeMove(self, move):
+		"""instead of calling self.items.insert(0,move) and self.cli.rotateLayer(move)
+		do it in one move"""
+		# self.cli.rotateLayer(move)
+		# self.items.insert(0, move)
 
-class Stack(Algorithms):
+class Queue(Algorithms):
 	def __init__(self, board):
 		Algorithms.__init__(self, board)
 		self.board = board
@@ -557,7 +615,7 @@ class Stack(Algorithms):
 		return self.items[len(self.items)-1]
 
 	def size(self):
-		# print("size of stack: ", len(self.items))
+		# print("size of queue: ", len(self.items))
 		return len(self.items)
 
 
@@ -599,7 +657,6 @@ class Solve():
 
 	def SolveInitCross(self):
 		#find InitSolvedSide and solve cross
-		
 		self.InvertInitSolvedSide(self.InitSolvedSide)
 
 		while self.FindPositionPiece(InitSolvedSide):
@@ -609,7 +666,6 @@ class Solve():
 					Cube.Rotate()
 			elif CheckCorner(self.FindPositionPiece):
 				pass
-
 
 	def SolveInitSide(self):
 		pass

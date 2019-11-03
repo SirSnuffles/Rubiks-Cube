@@ -9,29 +9,11 @@ import time
 import cliCube
 
 from PiBasicRotation import MotorControl
-from Solve import Stack
+from Solve import Queue
 from Solve import Solve
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
-
-# buttonVertex = (
-# 	(1, 1),
-# 	(1, -1),
-# 	(-1, -1),
-# 	(-1, 1)
-# )
-
-# buttonEdges = (
-# 	(0, 1),
-# 	(0, 2),
-# 	(3, 2),
-# 	(3, 1)
-# )
-
-# buttonSurface = (
-# 	(0, 1, 2, 3)
-# )
 
 vertices = (
 	( 1, -1, -1),
@@ -119,19 +101,22 @@ class Cube():
 
 		glPopMatrix()
 
-class EntireCube(MotorControl, Stack):
+class EntireCube(MotorControl, Queue):
+	"""create all cubes based on a matrix of cubes called self.cubes"""
 	def __init__(self, N, scale, cli, screen):
 		self.cli = cli
 		MotorControl.__init__(self)
-		Stack.__init__(self, self.cli.arrayOfValues)
+		Queue.__init__(self, self.cli.arrayOfValues)
 		self.screen = screen
 		
 		self.N = N
 		cr = range(self.N)
+		"""list that contains the cubes to be rendered"""
 		self.cubes = [Cube((x, y, z), self.N, scale) for x in cr for y in cr for z in cr]
 
 
 	def mainloop(self):
+		"""main gameloop"""
 		rotateUpKey, rotateDownKey, rotateLeftKey, rotateRightKey = False, False, False, False
 		rotationalSensitivity = 2
 		rotateWholeCube = 5
@@ -151,6 +136,8 @@ class EntireCube(MotorControl, Stack):
 			"BaCCW": (2, 0, -1), 
 			"FCW": (2, 2, -1),
 		}
+
+		#commented moves are middle moves that cannot be matched to pibasicrotation file
 		manualControl = {
 			K_1: (0, 0, 1), 
 			# K_2: (0, 1, 1), 
@@ -201,7 +188,6 @@ class EntireCube(MotorControl, Stack):
 					"""if right mouse button is pushed, add 10 scramble moves to queue"""
 					for i in range(10):
 						self.Scramble()
-					# print(self.cli.arrayOfValues)
 
 				if event.type == KEYDOWN:
 					"""if a manual control move is init, perform move"""

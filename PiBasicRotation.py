@@ -3,13 +3,7 @@
 import time
 
 #TODO
-#implement method to work with 6 steppermotors that can rotate at the same time if possible (think top \n
-#and bottom rotation vs top and left rotation)
-
-#setup some physical system that will allow 6 motors to be run from 4 pins and a data cable for scheduling \n
-#what motors to turn at a specific time (scheduler)
-
-#find more adequete, higher current, 5v power supply and regulate
+#finished Just need to implement phyically
 
 class MotorControl(object):
 	def __init__(self):
@@ -34,6 +28,7 @@ class MotorControl(object):
 
 	def SetupGPIOPins(self):
 		print('setup GPIO Pins')
+		"""uncomment when using a raspberry pi"""
 		# for motor in self.MotorControlPins:
 		# 	for pin in motor:
 		# 		GPIO.setup(pin, GPIO.OUT)
