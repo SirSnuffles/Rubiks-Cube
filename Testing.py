@@ -1,85 +1,92 @@
-					elif whiteEdge[0] == 1:
-						#On the front side
-						if self.cli.arrayOfValues[0][7] == "white":
-							self.cli.rotateLayer("TCW")
-							self.items.insert(0, "TCW")
-							curWhitePositions = self.findWhiteEdges()
-						if whiteEdge[1] == 1:
-							"""https://ruwix.com/the-rubiks-cube/how-to-solve-the-rubiks-cube-beginners-method/step-1-first-layer-edges/							
-							"FCW"
-							"TCCW"
-							"RCW"
-							"TCW"	"""
-							self.cli.rotateLayer("FCW")
-							self.items.insert(0, "FCW")
 
-							self.cli.rotateLayer("TCCW")
-							self.items.insert(0, "TCCW")
 
-							self.cli.rotateLayer("RCW")
-							self.items.insert(0, "RCW")
+# def orientate(orientation, alg):
 
-							self.cli.rotateLayer("TCW")
-							self.items.insert(0, "TCW")
-							curWhitePositions = self.findWhiteEdges()
-							#happy
+# 	def orientateRight():
+# 		for ind, i in enumerate(alg):
+# 			if "F" in i:
+# 				alg[ind] = alg[ind].replace("F", "L")
+# 			if "L" in i:
+# 				alg[ind] = alg[ind].replace("L", "Ba")
+# 			if "Ba" in i:
+# 				alg[ind] = alg[ind].replace("Ba", "R")
+# 			if "R" in i:
+# 				alg[ind] = alg[ind].replace("R", "F")
+# 		print("New function: ")
+# 		return alg
+# 	def orientateLeft():
+# 		for ind, i in enumerate(alg):
+# 			if "F" in i:
+# 				alg[ind] = alg[ind].replace("F", "R")
+# 			if "L" in i:
+# 				alg[ind] = alg[ind].replace("L", "Ba")
+# 			if "Ba" in i:
+# 				alg[ind] = alg[ind].replace("Ba", "L")
+# 			if "R" in i:
+# 				alg[ind] = alg[ind].replace("R", "F")
+# 		print("New function: ")
+# 		return alg
+# 	def orientateOpposite():
+# 		for ind, i in enumerate(alg):
+# 			if "F" in i:
+# 				alg[ind] = alg[ind].replace("F", "Ba")
+# 			if "L" in i:
+# 				alg[ind] = alg[ind].replace("L", "R")
+# 			if "Ba" in i:
+# 				alg[ind] = alg[ind].replace("Ba", "F")
+# 			if "R" in i:
+# 				alg[ind] = alg[ind].replace("R", "L")
+# 		print("New function: ")
+# 		return alg
+# 	if orientation == 1: orientateRight()
+# 	if orientation == 2: orientateLeft()
+# 	if orientation == 3: orientateOpposite()
+# 	else: return alg
 
-						elif whiteEdge[1] == 3:
-							"""L B R' F2'"""
-							self.cli.rotateLayer("LCW")
-							self.items.insert(0, "LCW")
 
-							self.cli.rotateLayer("BCW")
-							self.items.insert(0, "BCW")
+# def main():
+# 	for i in range(4):
+# 		print(orientate(i, ["FCW", "FCCW", "LCW", "LCCW", "RCW", "RCCW", "BaCW", "BaCCW", "BCW", "BCCW", "TCW", "TCCW"]))
 
-							self.cli.rotateLayer("LCCW")
-							self.items.insert(0, "LCCW")
+# if __name__ == '__main__':
+# 	main()
 
-							self.cli.rotateLayer("FCW")
-							self.items.insert(0, "FCW")
+# # alg = ['FCW', 'FCCW', 'LCW', 'LCCW', 'RCW', 'RCCW', 'BaCW', 'BaCCW', 'BCW', 'BCCW', 'TCW', 'TCCW']
 
-							self.cli.rotateLayer("FCW")
-							self.items.insert(0, "FCW")
-							curWhitePositions = self.findWhiteEdges()
-							#happy
+# # for ind, i in enumerate(alg):
+# # 	if "F" in i:
+# # 		alg[ind] = "L"
+# # 	if "F" in i:
+# # 		alg[ind].replace("F", "L")
+# # 	if "L" in i:
+# # 		alg[ind].replace("L", "Ba")
+# # 	if "Ba" in i:
+# # 		alg[ind].replace("Ba", "R")
+# # 	if "R" in i:
+# # 		alg[ind].replace("R", "F")
 
-						elif whiteEdge[1] == 5:
-							#R' D' R F2
+# # alg = "FCCW"
+# # print(alg)
+# # alg = alg.replace("F", "L")
+# # print(alg)
 
-							self.cli.rotateLayer("RCCW")
-							self.items.insert(0, "RCCW")
 
-							self.cli.rotateLayer("BCCW")
-							self.items.insert(0, "BCCW")
 
-							self.cli.rotateLayer("RCW")
-							self.items.insert(0, "RCW")
 
-							self.cli.rotateLayer("FCW")
-							self.items.insert(0, "FCW")	
+# list1 = [1,2,3,4,5, 5]
+# list2 = [2,3,4,5,5,1]
 
-							self.cli.rotateLayer("FCW")
-							self.items.insert(0, "FCW")	
-							curWhitePositions = self.findWhiteEdges()
-							#happy
+# x = set([list1[0], list1[1]])
+# y = set([list2[0], list2[-1]])
+# print(x)
+# print(y)
+# print(x == y)
 
-						elif whiteEdge[1] == 7:
-							"""F' R' D' R F2"""
-							self.cli.rotateLayer("FCCW")
-							self.items.insert(0, "FCCW")
 
-							self.cli.rotateLayer("RCCW")
-							self.items.insert(0, "RCCW")
 
-							self.cli.rotateLayer("BCCW")
-							self.items.insert(0, "BCCW")
-
-							self.cli.rotateLayer("RCW")
-							self.items.insert(0, "RCW")
-
-							self.cli.rotateLayer("FCW")
-							self.items.insert(0, "FCW")
-
-							self.cli.rotateLayer("FCW")
-							self.items.insert(0, "FCW")
-							curWhitePositions = self.findWhiteEdges()
+foobars = [0,0,1]
+if any(x == 1 for x in foobars):
+	print(True)
+else:
+	print(False)
+# print(any() == 0)
