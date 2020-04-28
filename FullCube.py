@@ -5,12 +5,11 @@ import pygame
 import random
 from pygame.locals import *
 import time
-
 import cliCube
+import _thread
 
-from PiBasicRotation import MotorControl
+from PiBasicRotation import IODevices
 from Solve import Queue
-from Solve import Solve
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -48,12 +47,12 @@ surfaces = (
 	(4, 0, 3, 6)
 )
 colors = (
-	(1, 0, 0), 
-	(0, 1, 0), 
-	(1, 0.5, 0), 
-	(0, 0, 1), 
-	(1, 1, 0),
-	(1, 1, 1)
+	(1, 0.5, 0), #O
+	(0, 0, 1), #B
+	(1, 0, 0), #R
+	(0, 1, 0), #G
+	(1, 1, 0), #Y
+	(1, 1, 1) #W
 )
 
 class Cube():
@@ -74,6 +73,7 @@ class Cube():
 			return
 
 		i, j = (axis + 1) % 3, (axis + 2) % 3
+
 		for k in range(3):
 			self.rot[k][i], self.rot[k][j] = -self.rot[k][j] * dir, self.rot[k][i] * dir
 
@@ -86,6 +86,7 @@ class Cube():
 		rotMat = [*self.rot[0], 0, *self.rot[1], 0, *self.rot[2], 0, *pos, 1]
 
 		glPushMatrix()
+
 		if animate and self.isAffected(axis, slice, dir):
 			glRotatef(angle * dir, *[1 if i == axis else 0 for i in range(3)])
 		glMultMatrixf(rotMat) 
@@ -93,26 +94,46 @@ class Cube():
 
 		glBegin(GL_QUADS)
 		for i in range(len(surf)): #change for loop to only iterate according to outside colour surfaces
-			#inplement function that will iterate through array and return a number to colour
-			glColor3fv(colors[i]) #change i to an iterable that maps colour to arrayofvalues colour
+			#implement function that will iterate through array and return a number to colour
+			glColor3fv(colors[i]) #change i to an iterable that maps colour to state colour
 			for j in surf[i]:
 				glVertex3fv(vertices[j])
 		glEnd()
 
 		glPopMatrix()
 
-class EntireCube(MotorControl, Queue):
+class EntireCube(IODevices, Queue):
 	"""create all cubes based on a matrix of cubes called self.cubes"""
 	def __init__(self, N, scale, cli, screen):
 		self.cli = cli
-		MotorControl.__init__(self)
-		Queue.__init__(self, self.cli.arrayOfValues)
+		IODevices.__init__(self)
+		Queue.__init__(self, self.cli.state)
 		self.screen = screen
 		
 		self.N = N
 		cr = range(self.N)
 		"""list that contains the cubes to be rendered"""
 		self.cubes = [Cube((x, y, z), self.N, scale) for x in cr for y in cr for z in cr]
+
+	def loadTexture(self):
+	    textureSurface = pygame.image.load('blueSide.png')
+	    textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
+	    width = textureSurface.get_width()
+	    height = textureSurface.get_height()
+
+	    glEnable(GL_TEXTURE_2D)
+	    texid = glGenTextures(1)
+
+	    glBindTexture(GL_TEXTURE_2D, texid)
+	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+	                 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
+
+	    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+	    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+	    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+	    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+	    return texid
 
 
 	def mainloop(self):
@@ -138,6 +159,7 @@ class EntireCube(MotorControl, Queue):
 		}
 
 		#commented moves are middle moves that cannot be matched to pibasicrotation file
+		#due to physical restraints
 		manualControl = {
 			K_1: (0, 0, 1), 
 			# K_2: (0, 1, 1), 
@@ -160,7 +182,7 @@ class EntireCube(MotorControl, Queue):
 		}
 
 		angX, angY, rotCube = 0, 0, (0, 0)
-		animate, animateAng, animateSpeed = False, 0, 10
+		animate, animateAng, animateSpeed = False, 0, 30
 		action = (0, 0, 0)
 
 		while True:
@@ -170,9 +192,9 @@ class EntireCube(MotorControl, Queue):
 				if not animate and self.peek() in rotSliceMap:
 					poppedItem = self.pop()
 					# self.cli.rotateLayer(poppedItem)
-					# self.updateBoard(self.cli.arrayOfValues)
+					# self.updateBoard(self.cli.state)
 					# print(self.cli.__str__())
-					# MotorControl.OrganiseMotorInput(self, str(pygame.key.name(event.key)))
+					# IODevices.OrganiseMotorInput(self, str(pygame.key.name(event.key)))
 					animate, action = True, rotSliceMap[poppedItem]
 
 			for event in pygame.event.get():
@@ -180,14 +202,25 @@ class EntireCube(MotorControl, Queue):
 					pygame.quit()
 					quit()
 
+				# if IODevices.solveButton():
+					# _thread.start_new_thread(self.Solve, ())
+
+				# if IODevices.scrambleButton():
+				# 	for i in range(10):
+				# 		_thread.start_new_thread(self.Scramble, ())
+
+				# if IODevices.manualButton() in rotCubeMap:
+				# 	rotCube = rotCubeMap[]
+
 				if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					"""if left mouse button is pushed, add solve moves to queue"""
-					self.Solve()
-
+					_thread.start_new_thread(self.Solve, ())
+					
+					
 				if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
 					"""if right mouse button is pushed, add 10 scramble moves to queue"""
 					for i in range(10):
-						self.Scramble()
+						_thread.start_new_thread(self.Scramble, ())
 
 				if event.type == KEYDOWN:
 					"""if a manual control move is init, perform move"""
@@ -200,9 +233,7 @@ class EntireCube(MotorControl, Queue):
 							if getMove == value:
 								move = key
 						self.cli.rotateLayer(move)
-						# self.updateBoard(self.cli.arrayOfValues)
-						# print(self.cli.__str__())
-						# MotorControl.OrganiseMotorInput(self, str(pygame.key.name(event.key)))
+						IODevices.OrganiseMotorInput(self, str(pygame.key.name(event.key)))
 						animate, action = True, manualControl[event.key]
 				if event.type == KEYUP:
 					if event.key in rotCubeMap:
@@ -238,10 +269,9 @@ class EntireCube(MotorControl, Queue):
 			pygame.time.wait(10)  
 
 def main():
-
 	pygame.init()
 	display = (500,500)
-	screen = pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+	screen = pygame.display.set_mode(display, DOUBLEBUF|OPENGL|OPENGLBLIT)
 	glEnable(GL_DEPTH_TEST) 
 
 	glMatrixMode(GL_PROJECTION)
